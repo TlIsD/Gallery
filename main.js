@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import { Reflector } from 'three/addons/objects/Reflector.js';
 import * as TWEEN from 'tween';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
+import * as CANNON from 'cannon-es'
+
 import Painting from './AddElement/paintingAdd.js';
 import Record from "./AddElement/recordAdd";
 import Bench from "./AddElement/benchAdd";
@@ -10,6 +12,7 @@ import Bench from "./AddElement/benchAdd";
 const raycaster = new THREE.Raycaster(undefined, undefined, 0.1, 10);
 const mouse = new THREE.Vector2();
 
+// 初始化渲染器
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setAnimationLoop(animate);
@@ -36,11 +39,11 @@ scene.add(controls.object);
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
 scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5)
 directionalLight.position.set(5, 10, 5).normalize();
 scene.add(directionalLight);
 
-const pointLight = new THREE.PointLight(0xffffff, 0.8, 100);
+const pointLight = new THREE.PointLight(0xffffff, 0.8, 100)
 pointLight.position.set(0, 5, 0);
 scene.add(pointLight);
 
@@ -81,11 +84,11 @@ scene.add(ceiling);
 
 
 // 墙体材质
-const wallTextureLoader1 = new THREE.TextureLoader();
-const wallTexture1 = wallTextureLoader1.load('./public/wall.png')
+const TextureLoader = new THREE.TextureLoader();
+const wallTexture1 = TextureLoader.load('./public/wall.png')
 const wallMaterWithTexture1 = new THREE.MeshStandardMaterial({ map: wallTexture1 })
 
-const wallMaterial = new THREE.MeshLambertMaterial({ color: 0xffa500 })
+const wallMaterial = new THREE.MeshStandardMaterial({ color: 0xff3c00 })
 
 // 创建后墙
 const backWallGeometry = new THREE.PlaneGeometry(galleryLength, wallHeight);
@@ -99,7 +102,6 @@ const frontWall = new THREE.Mesh(frontWallGeometry, wallMaterWithTexture1);
 frontWall.position.set(0, wallHeight / 2, galleryWidth / 2);
 frontWall.rotation.y = Math.PI;
 scene.add(frontWall);
-
 
 // 创建左墙
 const leftWallShape = new THREE.Shape();
@@ -119,21 +121,27 @@ export default leftWall
 scene.add(leftWall);
 
 // 创建右墙（带门）
-const doorWidth = 4;
-const doorTotalHeight = 7;
 const rightWallShape = new THREE.Shape();
 rightWallShape.moveTo(-galleryWidth / 2, 0);
 rightWallShape.lineTo(galleryWidth / 2, 0);
 rightWallShape.lineTo(galleryWidth / 2, wallHeight);
 rightWallShape.quadraticCurveTo(0, wallHeight + 4, -galleryWidth / 2, wallHeight);
 rightWallShape.lineTo(-galleryWidth / 2, 0);
+
+
+// todo 搭建空气墙
+
+const doorWidth = 7.5;
+const doorTotalHeight = 7;
+// 创建门洞
 const doorHole = new THREE.Path();
 doorHole.moveTo(-doorWidth / 2, 0);
-doorHole.lineTo(-doorWidth / 2, doorTotalHeight - 0.5);
-doorHole.quadraticCurveTo(0, doorTotalHeight, doorWidth / 2, doorTotalHeight - 0.5);
+doorHole.lineTo(-doorWidth / 2, doorTotalHeight - 1);
+doorHole.quadraticCurveTo(0, doorTotalHeight, doorWidth / 2, doorTotalHeight - 1);
 doorHole.lineTo(doorWidth / 2, 0);
 doorHole.lineTo(-doorWidth / 2, 0);
 rightWallShape.holes.push(doorHole);
+
 const wallExtrudeSettings = { depth: 0.1, bevelEnabled: false };
 const rightWallGeometry = new THREE.ExtrudeGeometry(rightWallShape, wallExtrudeSettings);
 const rightWall = new THREE.Mesh(rightWallGeometry, wallMaterial);
@@ -144,7 +152,8 @@ scene.add(rightWall);
 rightWall.renderOrder = 1;
 
 // 门材质
-const doorMaterial = new THREE.MeshLambertMaterial({ color: 0x654321 });
+const doorTexture = TextureLoader.load('./public/door.png')
+const doorMaterial = new THREE.MeshStandardMaterial({ map: doorTexture });
 const doorThickness = 0.05;
 const doorPanelWidth = doorWidth / 2;
 const doorPanelHeight = doorTotalHeight;
@@ -347,8 +356,12 @@ function animate() {
     cameraPosition.addScaledVector(right, moveSpeed);
   }
 
-  if (cameraPosition.z < -galleryWidth / 2) {
-    cameraPosition.z = -galleryWidth / 2;
+  // 限制移动范围
+  const limitWidth =  galleryWidth / 2 - 0.1
+  if (cameraPosition.z < -limitWidth) {
+    cameraPosition.z = -limitWidth;
+  }else if (cameraPosition.z > limitWidth) {
+    cameraPosition.z = limitWidth;
   }
 
   controls.update();
@@ -394,7 +407,7 @@ function onMouseClick() {
   }
 }
 
-// 监听鼠标移动
+// 监听鼠标移动事件
 function onMouseMove(){
   mouse.x = 0;
   mouse.y = 0;
@@ -436,6 +449,8 @@ window.addEventListener('mousedown', onMouseDown);
 window.addEventListener('keydown', onKeyDown);
 window.addEventListener('keyup', onKeyUp);
 
+
+// 响应式布局
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();

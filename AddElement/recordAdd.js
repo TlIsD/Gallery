@@ -20,7 +20,7 @@ class Record{
         record.rotation.z = Math.PI / 2; // 将唱片绕垂直轴旋转90度
 
         // 将唱片挂在门旁
-        record.position.set(galleryLength / 2 + 0.1, wallHeight / 2 - 3, galleryWidth / 2 - 11.6);
+        record.position.set(galleryLength / 2 + 0.1, wallHeight / 2 - 3, galleryWidth / 2 - 10);
 
         // 将唱片添加到场景中
         scene.add(record)
