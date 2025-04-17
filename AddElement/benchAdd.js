@@ -14,7 +14,7 @@ class Bench {
         if (color){
             benchMaterial = new THREE.MeshLambertMaterial({ color: color });
         }else {
-            benchMaterial = new THREE.MeshLambertMaterial({ color: 0x8b4513 });
+            benchMaterial = new THREE.MeshLambertMaterial({ color: 0x000000 });
         }
 
         const seatWidth = 6, seatDepth = 1, seatThickness = 0.15;

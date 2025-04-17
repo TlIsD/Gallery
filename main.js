@@ -294,10 +294,16 @@ function rotateRecord(){
       })
 }
 
+// 添加长凳
+const bench1 = new Bench(0, 0).createBench()
+scene.add(bench1)
 
-const bench1 = new Bench(0, 0)
-const bench = bench1.createBench(0x000000)
-scene.add(bench)
+const bench2 = new Bench(10 , 0).createBench(0x8b4513)
+scene.add(bench2)
+
+const bench3 = new Bench(-10 , 0).createBench(0xffccff)
+scene.add(bench3)
+
 
 // 移动
 let moveSpeed = 0.1;
@@ -384,7 +390,7 @@ function onMouseClick() {
       rotateRecord()
       record.audioPlay(music)
     }
-    console.log('点击了物体:', object);
+    // console.log('点击了物体:', object);
   }
 }
 
@@ -402,8 +408,6 @@ function onMouseMove(){
     const intersect = raycaster.intersectObject(paintingMesh[i])
     intersects.push(intersect)
   }
-
-  console.log(intersects)
 
   for (let i = 0; i < intersects.length; i++) {
 
