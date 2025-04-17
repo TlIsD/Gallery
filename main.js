@@ -6,7 +6,7 @@ import Painting from'./paintingAdd.js';
 import Record from "./recordAdd";
 
 // 初始化准星
-const raycaster = new THREE.Raycaster(undefined, undefined, 0.1, 50);
+const raycaster = new THREE.Raycaster(undefined, undefined, 0.1, 10);
 const mouse = new THREE.Vector2();
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -249,6 +249,10 @@ const recordImgSrc = './public/one_last_kiss.jpg'
 const record = new Record(recordRadius, recordHeight, recordImgSrc)
 const recordMesh = record.add(scene, galleryLength, galleryWidth, wallHeight)
 
+// 预加载音频
+const musicUrl = './public/OneLastKiss.flac'
+const music = record.setAudio(musicUrl)
+
 // 唱片动画
 function rotateRecord(){
   new TWEEN.Tween(recordMesh.rotation)
@@ -320,13 +324,6 @@ function onMouseDown() {
   controls.lock()
 }
 
-// 创建音频对象
-const listener = new THREE.AudioListener();
-const sound = new THREE.Audio(listener);
-
-// 加载音频文件并设置为音频对象的缓冲区
-const audioLoader = new THREE.AudioLoader();
-
 function onMouseClick() {
   // 光标位置固定在中心
   mouse.x = 0;
@@ -341,12 +338,7 @@ function onMouseClick() {
       ToggleDoor()
     }else if (object === recordMesh){
       rotateRecord()
-      audioLoader.load('./OneLastKiss.flac', function (buffer) {
-        sound.setBuffer(buffer);
-        sound.setLoop(true); // 设置循环播放
-        sound.setVolume(0.5); // 设置音量
-        sound.play(); // 播放音频
-      });
+      record.audioPlay(music)
     }
     console.log('点击了物体:', object);
   }
@@ -387,9 +379,7 @@ function onMouseMove(){
       const box = document.getElementById('info')
       box.style.display = 'none'
     }
-
   }
-
 }
 
 window.addEventListener('click', onMouseClick);
