@@ -30,6 +30,7 @@ camera.lookAt(galleryLength/2, 5, 0);
 const controls = new PointerLockControls(camera, renderer.domElement);
 scene.add(controls.object);
 
+
 // 创建天花板
 const ceilingSegW = 40, ceilingSegH = 40;
 const ceilingGeometry = new THREE.PlaneGeometry(galleryLength, galleryWidth, ceilingSegW, ceilingSegH);
@@ -158,6 +159,7 @@ function ToggleDoor(){
       .start()
 }
 
+
 // 添加画(左墙)
 const url = './public/MonaLisa.jpg';
 const position = 'left'
@@ -167,32 +169,33 @@ painting.setName('蒙娜丽莎')
 painting.setArtist('达芬奇')
 const p1 = painting.add(wallHeight, position)
 
-// 添加画（前墙）
+const paintingMesh = [p1,]
 
+// 画作信息
+const paintings = [painting,]
+
+
+// 添加画（前墙）
 const front_urlList = [
-    './public/spring.jpg',
+    './public/Sunrise.jpg',
     './public/stars.jpg',
     './public/sunday.jpg',
     './public/wave.jpg',
 ]
 
 const front_paintingList = [
-    '吉维尼的春天',
-    '星月夜',
+    '日出‧印象',
+    '星夜',
     '大碗岛的星期天下午',
     '神奈川冲浪里'
 ]
 
 const front_artistList = [
-    '莫奈',
-    '梵高',
+    '克劳德·莫内',
+    '文森特·梵高',
     '乔治·修拉',
     '葛饰北斋'
 ]
-
-const paintingMesh = [p1,]
-
-const paintings = [painting,]
 
 for (let i = 0; i < front_urlList.length; i++) {
   const position = 'front'
@@ -206,17 +209,50 @@ for (let i = 0; i < front_urlList.length; i++) {
   paintingMesh.push(p_mesh)
 }
 
+// 添加画(后墙)
+const back_urlList = [
+  './public/Adam.jpg',
+  './public/freedom.jpg',
+  './public/NightWatch.jpg',
+  './public/Guernica.jpg',
+]
+
+const back_paintingList = [
+  '创造亚当',
+  '自由引导人民',
+  '夜巡',
+  '格尔尼卡'
+]
+
+const back_artistList = [
+  '米开朗基罗',
+  '欧仁·德拉克罗瓦',
+  '伦勃朗',
+  '巴勃罗·毕加索'
+]
+
+for (let i = 0; i < back_urlList.length; i++) {
+  const position = 'back'
+  const painting = new Painting(back_urlList[i]);
+  paintings.push(painting);
+
+  const p_mesh = painting.add(wallHeight, position, i+1);
+  painting.setName(back_paintingList[i])
+  painting.setArtist(back_artistList[i])
+
+  paintingMesh.push(p_mesh)
+}
 
 
 // 创建光源
-const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
 scene.add(ambientLight);
 
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
 directionalLight.position.set(5, 10, 5).normalize();
 scene.add(directionalLight);
 
-const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+const pointLight = new THREE.PointLight(0xffffff, 0.8, 100);
 pointLight.position.set(0, 5, 0);
 scene.add(pointLight);
 
