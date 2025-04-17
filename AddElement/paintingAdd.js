@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import leftWall from "./main";
+import leftWall from "../main";
 
 // 创建添加画类
 class Painting{
@@ -19,8 +19,8 @@ class Painting{
         // wallHeight为墙高 position为画要放的墙 num传入这是这面墙的第几幅画
 
         const baseNode = new THREE.Object3D();
-        var x = 0, y = wallHeight / 2, z = 0;
-        var width = 11, height = 8;
+        let x, z, width, height
+        const y = wallHeight / 2 - 0.5
         // 左墙
         if (position === 'left'){
             x = 1
@@ -34,6 +34,8 @@ class Painting{
             z = 14
             x = num*12 - 5
             baseNode.position.set(x, y, z);
+            width = 11
+            height = 8;
         }
 
         if (position === 'back'){
@@ -41,6 +43,8 @@ class Painting{
             x = num*12 - 5
             baseNode.position.set(x, y, z);
             baseNode.rotation.y = Math.PI;
+            width = 11
+            height = 8;
         }
 
         const paintingLoader = new THREE.TextureLoader();

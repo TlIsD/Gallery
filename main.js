@@ -2,10 +2,11 @@ import * as THREE from 'three';
 import { Reflector } from 'three/addons/objects/Reflector.js';
 import * as TWEEN from 'tween';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
-import Painting from'./paintingAdd.js';
-import Record from "./recordAdd";
+import Painting from './AddElement/paintingAdd.js';
+import Record from "./AddElement/recordAdd";
+import Bench from "./AddElement/benchAdd";
 
-// 初始化准星
+// 初始化准星和判定距离
 const raycaster = new THREE.Raycaster(undefined, undefined, 0.1, 10);
 const mouse = new THREE.Vector2();
 
@@ -24,11 +25,37 @@ const wallHeight = 10;
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(galleryLength/2 + 10, 5, 0);
-camera.lookAt(galleryLength/2, 5, 0);
+camera.position.set(galleryLength/2 + 10, 2, 0);
+camera.lookAt(galleryLength/2, 3, 0);
 
 const controls = new PointerLockControls(camera, renderer.domElement);
 scene.add(controls.object);
+
+
+// 创建光源
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+directionalLight.position.set(5, 10, 5).normalize();
+scene.add(directionalLight);
+
+const pointLight = new THREE.PointLight(0xffffff, 0.8, 100);
+pointLight.position.set(0, 5, 0);
+scene.add(pointLight);
+
+// 创建镜面地板
+const mirror = new Reflector(
+    new THREE.CircleGeometry(40, 64),
+    {
+      color: 0x505050,
+      textureWidth: window.innerWidth * window.devicePixelRatio,
+      textureHeight: window.innerHeight * window.devicePixelRatio,
+    }
+);
+mirror.position.set(0, 0, 0);
+mirror.rotateX(-Math.PI / 2);
+scene.add(mirror);
 
 
 // 创建天花板
@@ -51,6 +78,7 @@ const ceilingTexture = ceilingTextureLoader.load('./public/ceiling.png');
 const ceilingWithTexture = new THREE.MeshStandardMaterial({ map: ceilingTexture });
 const ceiling = new THREE.Mesh(ceilingGeometry, ceilingWithTexture);
 scene.add(ceiling);
+
 
 // 墙体材质
 const wallTextureLoader1 = new THREE.TextureLoader();
@@ -174,7 +202,6 @@ const paintingMesh = [p1,]
 // 画作信息
 const paintings = [painting,]
 
-
 // 添加画（前墙）
 const front_urlList = [
     './public/Sunrise.jpg',
@@ -244,41 +271,8 @@ for (let i = 0; i < back_urlList.length; i++) {
 }
 
 
-// 创建光源
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-scene.add(ambientLight);
-
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-directionalLight.position.set(5, 10, 5).normalize();
-scene.add(directionalLight);
-
-const pointLight = new THREE.PointLight(0xffffff, 0.8, 100);
-pointLight.position.set(0, 5, 0);
-scene.add(pointLight);
-
-// 创建镜面反射
-const mirror = new Reflector(
-    new THREE.CircleGeometry(40, 64),
-    {
-      color: 0x505050,
-      textureWidth: window.innerWidth * window.devicePixelRatio,
-      textureHeight: window.innerHeight * window.devicePixelRatio,
-    }
-);
-mirror.position.set(0, 0, 0);
-mirror.rotateX(-Math.PI / 2);
-scene.add(mirror);
-
-let moveSpeed = 0.1;
-let keys = {
-  w: false,
-  a: false,
-  s: false,
-  d: false,
-};
-
 // 创建唱片模型
-const recordRadius = 1; // 唱片半径
+const recordRadius = 0.8; // 唱片半径
 const recordHeight = 0.05; // 唱片厚度
 const recordImgSrc = './public/one_last_kiss.jpg'
 
@@ -299,6 +293,20 @@ function rotateRecord(){
         rotateRecord()
       })
 }
+
+
+const bench1 = new Bench(0, 0)
+const bench = bench1.createBench(0x000000)
+scene.add(bench)
+
+// 移动
+let moveSpeed = 0.1;
+let keys = {
+  w: false,
+  a: false,
+  s: false,
+  d: false,
+};
 
 function animate() {
   TWEEN.update();
