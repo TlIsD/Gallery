@@ -2,11 +2,12 @@ import * as THREE from 'three';
 import { Reflector } from 'three/addons/objects/Reflector.js';
 import * as TWEEN from 'tween';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
-import * as CANNON from 'cannon-es'
 
-import Painting from './AddElement/paintingAdd.js';
+import Painting from './AddElement/paintingAdd';
 import Record from "./AddElement/recordAdd";
 import Bench from "./AddElement/benchAdd";
+import Wall from "./AddElement/wallAdd";
+// import AirWall from "./AddElement/airWallAdd";
 
 // 初始化准星和判定距离
 const raycaster = new THREE.Raycaster(undefined, undefined, 0.1, 10);
@@ -90,66 +91,86 @@ const wallMaterWithTexture1 = new THREE.MeshStandardMaterial({ map: wallTexture1
 
 const wallMaterial = new THREE.MeshStandardMaterial({ color: 0xff3c00 })
 
-// 创建后墙
-const backWallGeometry = new THREE.PlaneGeometry(galleryLength, wallHeight);
-const backWall = new THREE.Mesh(backWallGeometry, wallMaterWithTexture1);
-backWall.position.set(0, wallHeight / 2, -galleryWidth / 2);
-scene.add(backWall);
+// 前后墙数据
+const front_backWallSize = {
+  'length': galleryLength - 0.2,
+  'height': wallHeight,
+}
 
-// 创建前墙
-const frontWallGeometry = new THREE.PlaneGeometry(galleryLength, wallHeight);
-const frontWall = new THREE.Mesh(frontWallGeometry, wallMaterWithTexture1);
-frontWall.position.set(0, wallHeight / 2, galleryWidth / 2);
-frontWall.rotation.y = Math.PI;
-scene.add(frontWall);
+const front_backWallMaterial = {
+  'map': './public/wall.png'
+}
 
-// 创建左墙
-const leftWallShape = new THREE.Shape();
-leftWallShape.moveTo(-galleryWidth / 2, 0);
-leftWallShape.lineTo(galleryWidth / 2, 0);
-leftWallShape.lineTo(galleryWidth / 2, wallHeight);
-leftWallShape.quadraticCurveTo(0, wallHeight + 4, -galleryWidth / 2, wallHeight);
-leftWallShape.lineTo(-galleryWidth / 2, 0);
-const leftWallExtrudeSettings = { depth: 0.1, bevelEnabled: false };
-const leftWallGeometry = new THREE.ExtrudeGeometry(leftWallShape, leftWallExtrudeSettings);
-leftWallGeometry.rotateY(Math.PI / 2);
-const leftWall = new THREE.Mesh(leftWallGeometry, wallMaterial);
-leftWall.position.set(-galleryLength / 2, 0, 0);
+const frontWallPosition = {
+  'x': 0,
+  'y': wallHeight / 2,
+  'z': galleryWidth / 2,
+}
+
+const backWallPosition = {
+  'x': 0,
+  'y': wallHeight / 2,
+  'z': -galleryWidth / 2,
+}
+
+// 创建前墙和后墙
+const backWall = new Wall(front_backWallSize, backWallPosition, front_backWallMaterial)
+const frontWall = new Wall(front_backWallSize, frontWallPosition, front_backWallMaterial)
+scene.add(backWall.createWall())
+scene.add(frontWall.createWall())
+
+
+// 左右墙数据
+const left_rightWallSize = {
+  'length': galleryLength,
+  'height': wallHeight,
+}
+
+const left_rightWallMaterial = {
+  'color': 0xff3c00,
+}
+
+const leftWallPosition = {
+  'x': -galleryLength / 2,
+  'y': 0,
+  'z': 0,
+}
+
+const rightWallPosition ={
+  'x': galleryLength / 2,
+  'y': 0,
+  'z': 0,
+}
+
+const leftWall = new Wall(left_rightWallSize, leftWallPosition, left_rightWallMaterial).createCurvedWall()
+scene.add(leftWall)
 
 export default leftWall
 
-scene.add(leftWall);
+const doorWidth = 7.5;
+const doorTotalHeight = 7;
 
-// 创建右墙（带门）
-const rightWallShape = new THREE.Shape();
-rightWallShape.moveTo(-galleryWidth / 2, 0);
-rightWallShape.lineTo(galleryWidth / 2, 0);
-rightWallShape.lineTo(galleryWidth / 2, wallHeight);
-rightWallShape.quadraticCurveTo(0, wallHeight + 4, -galleryWidth / 2, wallHeight);
-rightWallShape.lineTo(-galleryWidth / 2, 0);
+const dic = {'isDoor': true, 'doorWidth': doorWidth, 'doorTotalHeight': doorTotalHeight}
+
+// 创建右墙（带门洞）
+const rightWall = new Wall(left_rightWallSize, rightWallPosition, left_rightWallMaterial, dic).createCurvedWall()
+scene.add(rightWall)
+
 
 
 // todo 搭建空气墙
+// const airWallSize = {
+//   'length': galleryLength,
+//   'height': wallHeight,
+//   'depth': 0.1,
+// }
+// const airWallPosition = {
+//   'x': '',
+//   'y': 0,
+//   'z': 1,
+// }
+// const whichAirWall = new AirWall()
 
-const doorWidth = 7.5;
-const doorTotalHeight = 7;
-// 创建门洞
-const doorHole = new THREE.Path();
-doorHole.moveTo(-doorWidth / 2, 0);
-doorHole.lineTo(-doorWidth / 2, doorTotalHeight - 1);
-doorHole.quadraticCurveTo(0, doorTotalHeight, doorWidth / 2, doorTotalHeight - 1);
-doorHole.lineTo(doorWidth / 2, 0);
-doorHole.lineTo(-doorWidth / 2, 0);
-rightWallShape.holes.push(doorHole);
-
-const wallExtrudeSettings = { depth: 0.1, bevelEnabled: false };
-const rightWallGeometry = new THREE.ExtrudeGeometry(rightWallShape, wallExtrudeSettings);
-const rightWall = new THREE.Mesh(rightWallGeometry, wallMaterial);
-rightWall.rotation.y = -Math.PI / 2;
-rightWall.position.set(galleryLength / 2, 0, 0);
-scene.add(rightWall);
-
-rightWall.renderOrder = 1;
 
 // 门材质
 const doorTexture = TextureLoader.load('./public/door.png')
@@ -354,14 +375,6 @@ function animate() {
     const right = new THREE.Vector3(-direction.z, 0, direction.x);  // 计算右侧方向
     right.normalize();
     cameraPosition.addScaledVector(right, moveSpeed);
-  }
-
-  // 限制移动范围
-  const limitWidth =  galleryWidth / 2 - 0.1
-  if (cameraPosition.z < -limitWidth) {
-    cameraPosition.z = -limitWidth;
-  }else if (cameraPosition.z > limitWidth) {
-    cameraPosition.z = limitWidth;
   }
 
   controls.update();

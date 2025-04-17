@@ -6,16 +6,12 @@ class Bench {
         this.z = z
     }
 
-    createBench(color = 0){
+    createBench(color = null){
         const bench = new THREE.Group();
 
-        // 可以自定义长凳颜色
-        let benchMaterial
-        if (color){
-            benchMaterial = new THREE.MeshLambertMaterial({ color: color });
-        }else {
-            benchMaterial = new THREE.MeshLambertMaterial({ color: 0x000000 });
-        }
+        // 可以自定义长凳颜色(默认为白色)
+        let benchMaterial = new THREE.MeshLambertMaterial({ color: color });
+
 
         const seatWidth = 6, seatDepth = 1, seatThickness = 0.15;
         const legHeight = 0.6;
