@@ -2,14 +2,15 @@ import * as THREE from 'three';
 
 class Wall{
     constructor(wallSize, wallPosition, wallMaterial, defineDic = {}){
-        // wallSize要传参length,height,depth
+        // wallSize要传参length,height, 如果createCurvedWall有需要时可以传一个depth
         // wallPosition要传xyz三个坐标
         // wallMaterial要传color或map键值对,否则墙材质为默认值(黑色)
 
         // 解构
         this.length = wallSize.length
         this.height = wallSize.height
-        this.depth = wallPosition.depth
+        this.depth = wallSize.depth || 0.1
+        this.highest_point = wallMaterial.highest_point || 4
 
         this.x = wallPosition.x
         this.y = wallPosition.y
@@ -21,15 +22,12 @@ class Wall{
             this.map = wallMaterial.map
         }
 
-        if (defineDic){
-            // 可以传一个depth厚度进来自行自定义
-            // 可以自定义墙弧顶的高度highest_point, 建议和天花板搭配使用
-            this.depth = defineDic.depth || 0.1
-            this.highest_point = defineDic.highest_point || 4
-            this.isDoor = defineDic.isDoor || false
-            this.doorWidth = defineDic.doorWidth || 0
-            this.doorTotalHeight = defineDic.doorTotalHeight || 0
-        }
+        // 可以传一个depth厚度进来自行自定义
+        // 可以自定义墙弧顶的高度highest_point, 建议和天花板搭配使用
+
+        this.isDoor = defineDic.isDoor || false
+        this.doorWidth = defineDic.doorWidth || 0
+        this.doorTotalHeight = defineDic.doorTotalHeight || 0
     }
 
     createWallMaterial(){
@@ -69,7 +67,7 @@ class Wall{
         WallShape.moveTo(-this.length / 2, 0)
         WallShape.lineTo(this.length / 2, 0)
         WallShape.lineTo(this.length / 2, this.height)
-        WallShape.quadraticCurveTo(0, this.length +this.highest_point, -this.length / 2, this.height)
+        WallShape.quadraticCurveTo(0, this.height + this.highest_point, -this.length / 2, this.height)
         WallShape.lineTo(-this.length / 2, 0)
 
         // 有厚度

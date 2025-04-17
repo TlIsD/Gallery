@@ -24,7 +24,8 @@ class Painting{
         // 左墙
         if (position === 'left'){
             x = 1
-            baseNode.position.set(x, y, z);
+            z = 0
+            baseNode.position.set(x, y, z)
             baseNode.rotation.y = -Math.PI / 2;
             width = 6
             height = 7

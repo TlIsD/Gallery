@@ -7,7 +7,6 @@ import Painting from './AddElement/paintingAdd';
 import Record from "./AddElement/recordAdd";
 import Bench from "./AddElement/benchAdd";
 import Wall from "./AddElement/wallAdd";
-// import AirWall from "./AddElement/airWallAdd";
 
 // 初始化准星和判定距离
 const raycaster = new THREE.Raycaster(undefined, undefined, 0.1, 10);
@@ -84,12 +83,7 @@ const ceiling = new THREE.Mesh(ceilingGeometry, ceilingWithTexture);
 scene.add(ceiling);
 
 
-// 墙体材质
-const TextureLoader = new THREE.TextureLoader();
-const wallTexture1 = TextureLoader.load('./public/wall.png')
-const wallMaterWithTexture1 = new THREE.MeshStandardMaterial({ map: wallTexture1 })
 
-const wallMaterial = new THREE.MeshStandardMaterial({ color: 0xff3c00 })
 
 // 前后墙数据
 const front_backWallSize = {
@@ -122,7 +116,7 @@ scene.add(frontWall.createWall())
 
 // 左右墙数据
 const left_rightWallSize = {
-  'length': galleryLength,
+  'length': galleryWidth,
   'height': wallHeight,
 }
 
@@ -157,20 +151,7 @@ const rightWall = new Wall(left_rightWallSize, rightWallPosition, left_rightWall
 scene.add(rightWall)
 
 
-
-// todo 搭建空气墙
-// const airWallSize = {
-//   'length': galleryLength,
-//   'height': wallHeight,
-//   'depth': 0.1,
-// }
-// const airWallPosition = {
-//   'x': '',
-//   'y': 0,
-//   'z': 1,
-// }
-// const whichAirWall = new AirWall()
-
+const TextureLoader = new THREE.TextureLoader();
 
 // 门材质
 const doorTexture = TextureLoader.load('./public/door.png')
