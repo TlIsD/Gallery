@@ -4,6 +4,7 @@ import * as TWEEN from 'tween';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 
 import Painting from './AddElement/paintingAdd';
+import NewPainting from "./AddElement/newPaintingAdd";
 import Record from "./AddElement/recordAdd";
 import Bench from "./AddElement/benchAdd";
 import Wall from "./AddElement/wallAdd";
@@ -199,14 +200,26 @@ function ToggleDoor(){
 
 // 添加画(左墙)
 const url = './public/MonaLisa.jpg';
-const position = 'left'
+const size = {
+  width: 6,
+  height: 7,
+}
+const position = {
+  x: - galleryLength / 2 + 1,
+  y: wallHeight / 2 - 0.5,
+  z: 0,
+}
+const angle = {
+  y: -90
+}
 // 初始化
-const painting = new Painting(url)
+const painting = new NewPainting(size, position, angle, url)
 painting.setName('蒙娜丽莎')
 painting.setArtist('达芬奇')
-const p1 = painting.add(wallHeight, position)
+const p1 = painting.createPainting(0x303030)
+scene.add(p1[0])
 
-const paintingMesh = [p1,]
+const paintingMesh = [p1[1],]
 
 // 画作信息
 const paintings = [painting,]
@@ -448,5 +461,3 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
-
-
