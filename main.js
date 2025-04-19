@@ -83,8 +83,6 @@ const ceiling = new THREE.Mesh(ceilingGeometry, ceilingWithTexture);
 scene.add(ceiling);
 
 
-
-
 // 前后墙数据
 const front_backWallSize = {
   'length': galleryLength - 0.2,
