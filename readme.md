@@ -60,6 +60,9 @@ const music = record.setAudio(musicUrl)
 // 播放音乐
 record.audioPlay(music)
 ```
+#### 效果：
+![唱片](public/record.png)  
+可能和画框一样加一个边框会更像唱片一点，或者直接ps一个唱片图片上去，但目前就先这样吧。毕竟👇  
 唱片旋转的功能忘记写到类里去了(可能当时没想这么多)......
 
 - ### 自定义墙
@@ -119,7 +122,31 @@ scene.add(Wall)
 本来想引个物理引擎做个空气墙的，尝试了一下失败了，后续再用Three补吧。
 
 - ### 自定义画
-这个是一开始准备解耦的时候写的，写的太烂了就不展示了，有兴趣可以去paintingAdd.js里看看。
+新的在newPaintingAdd.js中，这次的和其他的一样自定义大小和位置了，并且能自定义旋转方向了，更方便挂在不同角度的墙上了(其实原来的没这个功能)。
+```javascript
+import NewPainting from "./AddElement/newPaintingAdd";
+
+const url = './public/MonaLisa.jpg';
+const size = {
+    width: 6,
+    height: 7,
+}
+const position = {
+    x: - galleryLength / 2 + 1,
+    y: wallHeight / 2 - 0.5,
+    z: 0,
+}
+const angle = {
+    y: -90
+}
+// 初始化
+const painting = new NewPainting(size, position, angle, url)
+painting.setName('蒙娜丽莎')
+painting.setArtist('达芬奇')
+const p1 = painting.createPainting(0x303030)
+scene.add(p1[0])
+```
+目前没想道一次性添加多个画作的好方法，所以原来的也就没删。
 
 - ### 其他
 里面还有元素没解耦出来，解耦出来的还有好多坑没填，写的好累，最近还好忙啊......
