@@ -3,7 +3,7 @@ import { Reflector } from 'three/addons/objects/Reflector.js';
 import * as TWEEN from 'tween';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 
-import Painting from './AddElement/paintingAdd';
+// import Painting from './AddElement/paintingAdd';
 import NewPainting from "./AddElement/newPaintingAdd";
 import Record from "./AddElement/recordAdd";
 import Bench from "./AddElement/benchAdd";
@@ -37,14 +37,14 @@ scene.add(controls.object);
 
 
 // 创建光源
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5)
 directionalLight.position.set(5, 10, 5).normalize();
 scene.add(directionalLight);
 
-const pointLight = new THREE.PointLight(0xffffff, 0.8, 100)
+const pointLight = new THREE.PointLight(0xffffff, 0.5, 100)
 pointLight.position.set(0, 5, 0);
 scene.add(pointLight);
 
@@ -138,8 +138,6 @@ const rightWallPosition ={
 const leftWall = new Wall(left_rightWallSize, leftWallPosition, left_rightWallMaterial).createCurvedWall()
 scene.add(leftWall)
 
-export default leftWall
-
 const doorWidth = 7.5;
 const doorTotalHeight = 7;
 
@@ -200,18 +198,13 @@ function ToggleDoor(){
 
 // 添加画(左墙)
 const url = './public/MonaLisa.jpg';
-const size = {
-  width: 6,
-  height: 7,
-}
+const size = { width: 6, height: 7 }
 const position = {
-  x: - galleryLength / 2 + 1,
+  x: - galleryLength / 2 + 0.2,
   y: wallHeight / 2 - 0.5,
   z: 0,
 }
-const angle = {
-  y: -90
-}
+const angle = { y: -90 }
 // 初始化
 const painting = new NewPainting(size, position, angle, url)
 painting.setName('蒙娜丽莎')
@@ -220,11 +213,15 @@ const p1 = painting.createPainting(0x303030)
 scene.add(p1[0])
 
 const paintingMesh = [p1[1],]
-
 // 画作信息
 const paintings = [painting,]
 
+const front_backSize = { width: 11, height: 8 }
+
 // 添加画（前墙）
+const frontPosition = { x: - galleryLength / 2 + 7, y: wallHeight / 2 - 0.5, z: galleryWidth / 2 }
+const frontAngle = {}
+
 const front_urlList = [
     './public/Sunrise.jpg',
     './public/stars.jpg',
@@ -246,19 +243,34 @@ const front_artistList = [
     '葛饰北斋'
 ]
 
-for (let i = 0; i < front_urlList.length; i++) {
-  const position = 'front'
-  const painting = new Painting(front_urlList[i]);
-  paintings.push(painting);
+for (let i = 0; i < front_urlList.length; i++){
+  const painting = new NewPainting(front_backSize, frontPosition, frontAngle, front_urlList[i])
+  const frontPainting = painting.createPainting(0x303030)
+  scene.add(frontPainting[0])
 
-  const p_mesh = painting.add(wallHeight, position, i+1);
   painting.setName(front_paintingList[i])
   painting.setArtist(front_artistList[i])
 
-  paintingMesh.push(p_mesh)
+  paintings.push(painting)
+  paintingMesh.push(frontPainting[1])
+
+  frontPosition.x += 12
 }
 
+
+// const frontPainting = new NewPainting(front_backSize, frontPosition, frontAngle, front_urlList)
+// const frontPaintings = frontPainting.createPaintings(front_paintingList, front_artistList, 0x303030, 12)
+// for (let i = 0; i < frontPaintings[1].length; i++) {
+//   scene.add(frontPaintings[1][i][0])
+//   paintings.push(frontPaintings[0][i])
+//   paintingMesh.push(frontPaintings[1][i][1])
+// }
+
+
 // 添加画(后墙)
+const backPosition = { x: galleryLength / 2 - 7, y: wallHeight / 2 - 0.5, z: - galleryWidth / 2 }
+const backAngle = { y: 180 }
+
 const back_urlList = [
   './public/Adam.jpg',
   './public/freedom.jpg',
@@ -280,16 +292,18 @@ const back_artistList = [
   '巴勃罗·毕加索'
 ]
 
-for (let i = 0; i < back_urlList.length; i++) {
-  const position = 'back'
-  const painting = new Painting(back_urlList[i]);
-  paintings.push(painting);
+for (let i = 0; i < back_urlList.length; i++){
+  const painting2 = new NewPainting(front_backSize, backPosition, backAngle, back_urlList[i])
+  const backPainting = painting2.createPainting(0x303030)
+  scene.add(backPainting[0])
 
-  const p_mesh = painting.add(wallHeight, position, i+1);
-  painting.setName(back_paintingList[i])
-  painting.setArtist(back_artistList[i])
+  painting2.setName(back_paintingList[i])
+  painting2.setArtist(back_artistList[i])
 
-  paintingMesh.push(p_mesh)
+  paintings.push(painting2)
+  paintingMesh.push(backPainting[1])
+
+  backPosition.x -= 12
 }
 
 
@@ -328,7 +342,7 @@ scene.add(bench3)
 
 
 // 移动
-let moveSpeed = 0.1;
+let moveSpeed = 0.05;
 let keys = {
   w: false,
   a: false,

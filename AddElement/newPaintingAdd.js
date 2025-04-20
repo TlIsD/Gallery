@@ -16,6 +16,7 @@ class NewPainting {
         this.angle_y = angle.y || 0
         this.angle_z = angle.z || 0
 
+        // 如果想一次构建多幅画就直接传列表
         this.url = url
     }
 
@@ -67,6 +68,29 @@ class NewPainting {
         // 返回baseNode用于挂载，返回painting用于交互
         return [baseNode, painting]
     }
+
+    // createPaintings(nameList, artistList, color = 0, interval){
+    //     // 因为懒所以就写了一个方向的，要反方向就传个负值吧，别的方向可以重写一下我的方法
+    //
+    //     const paintings = []
+    //     const paintingsClass = []
+    //
+    //     for (let i = 0; i < this.url.length; i++){
+    //         this.url = this.url[i]
+    //         const painting = this.createPainting(color)
+    //         this.setName(nameList[i])
+    //         this.setArtist(artistList[i])
+    //
+    //         paintingsClass.push(this)
+    //         paintings.push(painting)
+    //
+    //         // todo其他方向主要改这个地方
+    //         this.x += interval
+    //     }
+    //     // todo 优化返回值
+    //
+    //     return [paintingsClass, paintings]
+    // }
 
     MoveOnPainting(){
         // 鼠标移动到画作上显示相关信息
