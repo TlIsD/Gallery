@@ -342,7 +342,7 @@ scene.add(bench3)
 
 
 // 移动
-let moveSpeed = 0.05;
+let moveSpeed = 0.1;
 let keys = {
   w: false,
   a: false,
@@ -419,8 +419,10 @@ function onMouseClick() {
     if (object === leftDoorPanel || object === rightDoorPanel) {
       ToggleDoor()
     }else if (object === recordMesh){
+
       rotateRecord()
       record.audioPlay(music)
+
     }
     // console.log('点击了物体:', object);
   }

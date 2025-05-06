@@ -41,25 +41,7 @@ scene.add(bench)
 
 - ### 自定义唱片
 在recordAdd.js中定义，大家都有自己喜欢的音乐，为什么不在欣赏画作的来上一首呢。
-```javascript
-import Record from "./AddElement/recordAdd"
 
-// 创建唱片模型
-const recordRadius = 0.8; // 唱片半径
-const recordHeight = 0.05; // 唱片厚度
-const recordImgSrc = './public/one_last_kiss.jpg'
-
-const record = new Record(recordRadius, recordHeight, recordImgSrc)
-// 内置添加到场景中了
-const recordMesh = record.add(scene, galleryLength, galleryWidth, wallHeight)
-
-// 预加载音频
-const musicUrl = './public/OneLastKiss.flac'
-const music = record.setAudio(musicUrl)
-
-// 播放音乐
-record.audioPlay(music)
-```
 #### 效果：
 ![唱片](public/record.png)  
 可能和画框一样加一个边框会更像唱片一点，或者直接ps一个唱片图片上去，但目前就先这样吧。毕竟👇  
@@ -67,85 +49,12 @@ record.audioPlay(music)
 
 - ### 自定义墙
 在wallAdd.js中定义，有两种墙，其实createCurvedWall()也可以做一个长方体的墙出来，调一下传参就行了(我没试过)。
-```javascript
-import Wall from "./AddElement/wallAdd";
 
-// 墙数据
-const WallSize = {
-    'length': galleryLength - 0.2,
-    'height': wallHeight,
-}
-
-const WallMaterial = {
-    'map': './public/wall.png'
-}
-
-const WallPosition = {
-    'x': 0,
-    'y': wallHeight / 2,
-    'z': galleryWidth / 2,
-}
-
-// 创建墙(没有厚度)
-const Wall = new Wall(WallSize, WallPosition, WallMaterial)
-scene.add(Wall.createWall())
-```
-```javascript
-import Wall from "./AddElement/wallAdd";
-
-// 墙数据
-const WallSize = {
-    'length': galleryWidth,
-    'height': wallHeight,
-}
-
-const WallMaterial = {
-    'color': 0xff3c00,
-}
-
-const WallPosition ={
-    'x': galleryLength / 2,
-    'y': 0,
-    'z': 0,
-}
-
-const doorWidth = 7.5;
-const doorTotalHeight = 7;
-
-const dic = {'isDoor': true, 'doorWidth': doorWidth, 'doorTotalHeight': doorTotalHeight}
-
-// 创建墙（有厚度，带门洞）
-const Wall = new Wall(WallSize, WallPosition, WallMaterial, dic).createCurvedWall()
-scene.add(Wall)
-
-```
 本来想引个物理引擎做个空气墙的，尝试了一下失败了，后续再用Three补吧。
 
 - ### 自定义画
 新的在newPaintingAdd.js中，这次的和其他的一样自定义大小和位置了，并且能自定义旋转方向了，更方便挂在不同角度的墙上了(其实原来的没这个功能)。
-```javascript
-import NewPainting from "./AddElement/newPaintingAdd";
 
-const url = './public/MonaLisa.jpg';
-const size = {
-    width: 6,
-    height: 7,
-}
-const position = {
-    x: - galleryLength / 2 + 1,
-    y: wallHeight / 2 - 0.5,
-    z: 0,
-}
-const angle = {
-    y: -90
-}
-// 初始化
-const painting = new NewPainting(size, position, angle, url)
-painting.setName('蒙娜丽莎')
-painting.setArtist('达芬奇')
-const p1 = painting.createPainting(0x303030)
-scene.add(p1[0])
-```
 目前没想道一次性添加多个画作的好方法，原来的没删了，但文件没删。
 
 - ### 其他

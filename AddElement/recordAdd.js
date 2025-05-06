@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import * as TWEEN from "tween";
 
 class Record{
     constructor(radius, height, url){
@@ -46,6 +47,10 @@ class Record{
 
         return sound
     }
+
+    // todo 唱片的旋转和停止
+
+
 
     audioPlay(sound){
         sound.play();
